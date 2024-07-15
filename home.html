@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% set show_sidebar = false %}
+{% block content %}
+    <div class="home-container">
+        <h1>Welcome</h1>
+        <p>Please log in to access the admin page.</p>
+        <a href="{{ url_for('main.login') }}" class="btn btn-primary">Login</a>
+    </div>
+{% endblock %}
