@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set show_sidebar = false %}
+{% block content %}
+<h1>Upload an Excel File</h1>
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.city_name.label }} {{ form.city_name }}
+    </div>
+    <div>
+        {{ form.excel_file.label }} {{ form.excel_file }}
+    </div>
+    <div>
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock %}

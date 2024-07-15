@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% set show_sidebar = false %}
+{% block content %}
+<h1>Properties in {{ city.name }}</h1>
+<ul>
+    {% for property in properties %}
+        <li>
+            <a href="{{ url_for('main.property', unique_token=property.unique_token) }}">{{ property.address }}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

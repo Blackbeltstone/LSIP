@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Lead Service Inventory Project{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .navbar-brand img {
+            max-height: 20px;  /* Set a smaller maximum height for the navbar logo */
+            width: auto;  /* Adjust width automatically to maintain aspect ratio */
+        }
+
+        .footer img {
+            max-height: 25px;  /* Set a smaller maximum height for the footer logo */
+            width: auto;  /* Adjust width automatically to maintain aspect ratio */
+        }
+    </style>
+</head>
+<body>
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand d-flex align-items-center" href="https://www.trekkllc.com/" target="_blank">
+            <img src="{{ url_for('static', filename='pdfs/TrekkLogo.jpg') }}" class="d-inline-block align-top mr-2" alt="Logo">
+            Lead Service Inventory Project
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.admin') }}">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <div class="container">
+        <div class="row">
+            {% block content %}
+            {% if show_sidebar %}
+                <div class="col-md-4">
+                    {% block sidebar %}{% endblock %}
+                </div>
+                <div class="col-md-8">
+            {% else %}
+                <div class="col-12">
+            {% endif %}
+                    {% block main_content %}{% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <a href="https://www.trekkllc.com/" target="_blank">
+                <img src="{{ url_for('static', filename='pdfs/TrekkLogo.jpg') }}" alt="Logo">
+            </a>
+            <p class="text-muted">&copy; 2024 Lead Service Inventory Project</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

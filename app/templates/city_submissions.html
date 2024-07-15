@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% set show_sidebar = true %}
+
+{% block title %}View Submissions - My Application{% endblock %}
+
+{% block sidebar %}
+<h5 class="sidebar-heading">Sort and Filter</h5>
+<form id="sort-form">
+    <div class="form-group">
+        <label>Sort By</label>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="sort-by-pipe-material">
+            <label class="custom-control-label" for="sort-by-pipe-material">Sort by Pipe Material</label>
+        </div>
+        <div id="pipe-material-options" class="form-group" style="display: none;">
+            <label>Pipe Materials</label><br>
+            {% for pipe_material, display_name in [('Lead', 'Lead'), 
+                                                   ('Copper', 'Copper'), 
+                                                   ('Copper with Lead Solder', 'Copper with Lead Solder'), 
+                                                   ('Galvanized Steel', 'Galvanized Steel'), 
+                                                   ('PVC (Polyvinyl Chloride)', 'PVC'), 
+                                                   ('HDPE (High-Density Polyethylene)', 'HDPE'), 
+                                                   ('PEX (Cross-Linked Polyethylene)', 'PEX'), 
+                                                   ('Other Non Lead', 'Other Non Lead'), 
+                                                   ('Unable to Identify', 'Unable to Identify')] %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input pipe-material-checkbox" id="pipe-material-{{ loop.index }}" value="{{ pipe_material }}">
+                    <label class="form-check-label" for="pipe-material-{{ loop.index }}">{{ display_name }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="sort-by-water-softener">
+            <label class="custom-control-label" for="sort-by-water-softener">Sort by Water Softener Usage</label>
+        </div>
+        <div id="water-softener-options" class="form-group" style="display: none;">
+            <label>Water Softener Usage</label><br>
+            {% for water_softener in ['Yes', 'No', 'Unknown'] %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input water-softener-checkbox" id="water-softener-{{ loop.index }}" value="{{ water_softener }}">
+                    <label class="form-check-label" for="water-softener-{{ loop.index }}">{{ water_softener }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="sort-by-install-date">
+            <label class="custom-control-label" for="sort-by-install-date">Sort by Install Date</label>
+        </div>
+        <div id="install-date-options" class="form-group" style="display: none;">
+            <label>Install Date Range</label><br>
+            {% for install_date in ['Unknown', 'Before 1989', 'Between 1989 and 2014', 'After 2014'] %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input install-date-checkbox" id="install-date-{{ loop.index }}" value="{{ install_date }}">
+                    <label class="form-check-label" for="install-date-{{ loop.index }}">{{ install_date }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block main_content %}
+<h1>Submissions for {{ city.name }}</h1>
+<table class="table table-striped" id="submissions-table">
+    <thead>
+        <tr>
+            <th>Address</th>
+            <th>Install Date</th>
+            <th>Water Softener Usage</th>
+            <th>Primary Plumbing Photo</th>
+            <th>Secondary Plumbing Photo</th>
+        </tr>
+    </thead>
+    <tbody id="submissions-body">
+        {% for submission in submissions %}
+            <tr>
+                <td>{{ submission.address.address | e }}</td>
+                <td>{{ submission.plumbing_install_date | e }}</td>
+                <td>{{ submission.water_softener_usage | e }}</td>
+                <td>
+                    {% if submission.primary_plumbing_photo %}
+                        <a href="#" class="photo-link" data-photo="{{ url_for('static', filename='uploads/' ~ submission.primary_plumbing_photo.replace('\\', '/')) }}">{{ submission.primary_plumbing_type if submission.primary_plumbing_type else 'View Photo' }}</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if submission.secondary_plumbing_photo %}
+                        <a href="#" class="photo-link" data-photo="{{ url_for('static', filename='uploads/' ~ submission.secondary_plumbing_photo.replace('\\', '/')) }}">{{ submission.secondary_plumbing_type if submission.secondary_plumbing_type else 'View Photo' }}</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal for photo viewing -->
+<div id="photo-modal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modal-image">
+    <div id="caption"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // JavaScript for handling the photo modal
+        var modal = document.getElementById("photo-modal");
+        var modalImg = document.getElementById("modal-image");
+
+        document.querySelectorAll('.photo-link').forEach(item => {
+            item.addEventListener('click', event => {
+                event.preventDefault();
+                modal.style.display = "block";
+                modalImg.src = item.getAttribute('data-photo');
+            });
+        });
+
+        // Close the modal when the user clicks on <span> (x)
+        document.getElementsByClassName("close")[0].onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // JavaScript for handling the sorting and filtering
+        var sortByPipeMaterial = document.getElementById('sort-by-pipe-material');
+        var pipeMaterialOptions = document.getElementById('pipe-material-options');
+        var pipeMaterialCheckboxes = document.querySelectorAll('.pipe-material-checkbox');
+
+        if (sortByPipeMaterial) {
+            sortByPipeMaterial.addEventListener('change', function() {
+                if (this.checked) {
+                    pipeMaterialOptions.style.display = 'block';
+                } else {
+                    pipeMaterialOptions.style.display = 'none';
+                    pipeMaterialCheckboxes.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                    applyFilters();
+                }
+            });
+
+            pipeMaterialCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', applyFilters);
+            });
+        }
+
+        var sortByWaterSoftener = document.getElementById('sort-by-water-softener');
+        var waterSoftenerOptions = document.getElementById('water-softener-options');
+        var waterSoftenerCheckboxes = document.querySelectorAll('.water-softener-checkbox');
+
+        if (sortByWaterSoftener) {
+            sortByWaterSoftener.addEventListener('change', function() {
+                if (this.checked) {
+                    waterSoftenerOptions.style.display = 'block';
+                } else {
+                    waterSoftenerOptions.style.display = 'none';
+                    waterSoftenerCheckboxes.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                    applyFilters();
+                }
+            });
+
+            waterSoftenerCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', applyFilters);
+            });
+        }
+
+        var sortByInstallDate = document.getElementById('sort-by-install-date');
+        var installDateOptions = document.getElementById('install-date-options');
+        var installDateCheckboxes = document.querySelectorAll('.install-date-checkbox');
+
+        if (sortByInstallDate) {
+            sortByInstallDate.addEventListener('change', function() {
+                if (this.checked) {
+                    installDateOptions.style.display = 'block';
+                } else {
+                    installDateOptions.style.display = 'none';
+                    installDateCheckboxes.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                    });
+                    applyFilters();
+                }
+            });
+
+            installDateCheckboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', applyFilters);
+            });
+        }
+
+        function applyFilters() {
+            var table = document.getElementById('submissions-table');
+            var rows = Array.from(table.rows).slice(1);
+            var pipeMaterialFilters = Array.from(document.querySelectorAll('.pipe-material-checkbox:checked')).map(function(checkbox) {
+                return checkbox.value.toLowerCase();
+            });
+            var waterSoftenerFilters = Array.from(document.querySelectorAll('.water-softener-checkbox:checked')).map(function(checkbox) {
+                return checkbox.value.toLowerCase();
+            });
+            var installDateFilters = Array.from(document.querySelectorAll('.install-date-checkbox:checked')).map(function(checkbox) {
+                return checkbox.value;
+            });
+
+            rows.forEach(function(row) {
+                var primaryType = row.querySelector('td:nth-child(4)').innerText.trim().toLowerCase();
+                var secondaryType = row.querySelector('td:nth-child(5)').innerText.trim().toLowerCase();
+                var matchesPipeMaterial = pipeMaterialFilters.length === 0 || pipeMaterialFilters.includes(primaryType) || pipeMaterialFilters.includes(secondaryType);
+                var matchesWaterSoftener = waterSoftenerFilters.length === 0 || waterSoftenerFilters.includes(row.querySelector('td:nth-child(3)').innerText.trim().toLowerCase());
+                var matchesInstallDate = installDateFilters.length === 0 || installDateFilters.includes(row.querySelector('td:nth-child(2)').innerText.trim());
+                
+                if (matchesPipeMaterial && matchesWaterSoftener && matchesInstallDate) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
