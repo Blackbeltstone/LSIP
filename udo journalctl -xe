@@ -1,0 +1,15 @@
+[0;1;31m×[0m lsip.service - Gunicorn instance to serve LSIP
+     Loaded: [0;1;31mbad-setting[0m (Reason: Unit lsip.service has a bad unit file setting.)
+     Active: [0;1;31mfailed[0m (Result: exit-code) since Tue 2024-07-16 00:09:10 UTC; 3 days ago
+   Main PID: 3535 (code=exited, status=203/EXEC)
+        CPU: 1ms
+
+Jul 16 00:09:10 django-s-1vcpu-2gb-nyc3-01 systemd[1]: Started Gunicorn instance to serve LSIP.
+Jul 16 00:09:10 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;39m[0;1;31m[0;1;39mlsip.service: Main process exited, code=exited, status=203/EXEC[0m
+Jul 16 00:09:10 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mlsip.service: Failed with result 'exit-code'.[0m
+Jul 19 17:49:15 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;31m[0;1;39m[0;1;31mlsip.service: Service has more than one ExecStart= setting, which is only allowed for Type=oneshot services. Refusing.[0m
+Jul 19 17:51:32 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185m/etc/systemd/system/lsip.service:28: Unknown key name 'Description' in section 'Install', ignoring.[0m
+Jul 19 17:51:32 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185m/etc/systemd/system/lsip.service:29: Unknown key name 'After' in section 'Install', ignoring.[0m
+Jul 19 17:51:32 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;31m[0;1;39m[0;1;31mlsip.service: Service has more than one ExecStart= setting, which is only allowed for Type=oneshot services. Refusing.[0m
+Jul 19 17:51:48 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185m/etc/systemd/system/lsip.service:28: Unknown key name 'Description' in section 'Install', ignoring.[0m
+Jul 19 17:51:48 django-s-1vcpu-2gb-nyc3-01 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185m/etc/systemd/system/lsip.service:29: Unknown key name 'After' in section 'Install', ignoring.[0m
