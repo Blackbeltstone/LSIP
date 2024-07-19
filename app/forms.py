@@ -28,10 +28,8 @@ class SubmissionForm(FlaskForm):
         ('', 'Primary Pipe Type'),
         ('Lead', 'Lead'),
         ('Copper', 'Copper'),
-        ('Copper with Lead Solder', 'Copper with Lead Solder'),
         ('Galvanized Steel', 'Galvanized Steel'),
         ('PVC (Polyvinyl Chloride)', 'PVC (Polyvinyl Chloride)'),
-        ('HDPE (High-Density Polyethylene)', 'HDPE (High-Density Polyethylene)'),
         ('PEX (Cross-Linked Polyethylene)', 'PEX (Cross-Linked Polyethylene)'),
         ('Other Non Lead', 'Other Non Lead'),
         ('Unable to Identify', 'Unable to Identify')
@@ -42,10 +40,8 @@ class SubmissionForm(FlaskForm):
         ('', 'Secondary Pipe Type'),
         ('Lead', 'Lead'),
         ('Copper', 'Copper'),
-        ('Copper with Lead Solder', 'Copper with Lead Solder'),
         ('Galvanized Steel', 'Galvanized Steel'),
         ('PVC (Polyvinyl Chloride)', 'PVC (Polyvinyl Chloride)'),
-        ('HDPE (High-Density Polyethylene)', 'HDPE (High-Density Polyethylene)'),
         ('PEX (Cross-Linked Polyethylene)', 'PEX (Cross-Linked Polyethylene)'),
         ('Other Non Lead', 'Other Non Lead')
     ], validators=[Optional()])
